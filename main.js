@@ -6,7 +6,6 @@ if(document.readyState == "loading"){
 
 function ready(){
     let borrarBotones = document.getElementsByClassName("cart-remove")
-    console.log(borrarBotones);
     for(botones of borrarBotones){
         let button = botones;
         button.addEventListener("click", borrarProducto);
@@ -23,12 +22,11 @@ function ready(){
         boton.addEventListener("click", agregarClick);
     }
 
-    
 }
 
 // Borrar productos del carrito
-function borrarProducto(event){
-    let botonClickeado = event.target;
+function borrarProducto(e){
+    let botonClickeado = e.target;
     botonClickeado.parentElement.remove();
     actualizarTotal();
 }
@@ -36,8 +34,8 @@ function borrarProducto(event){
 
 
 // Contar cambios
-function contadorChanged(event){
-    let input = event.target;
+function contadorChanged(e){
+    let input = e.target;
     if(isNaN(input.value) || input.value <= 0){
         input.value = 1;
     }
@@ -45,8 +43,8 @@ function contadorChanged(event){
 }
 
 // Agregar al carrito
-function agregarClick(event){
-    let boton = event.target;
+function agregarClick(e){
+    let boton = e.target;
     let productos = boton.parentElement;
     let titulo = productos.getElementsByClassName("card-title")[0].innerText;
     let precio = productos.getElementsByClassName("precio")[0].innerText;
@@ -67,6 +65,7 @@ function agregarProductoAlCarrito(titulo,precio,prodImg){
             return;
         }
     }
+
     const carritoProductos = `
             <img src="${prodImg}" alt="" class="cart-img">
             <div class="detail-box">
@@ -78,10 +77,15 @@ function agregarProductoAlCarrito(titulo,precio,prodImg){
     `;
     productoCarrito.innerHTML = carritoProductos;
     carritoItems.append(productoCarrito);
+
     
     productoCarrito.getElementsByClassName("cart-remove")[0].addEventListener("click", borrarProducto);
     productoCarrito.getElementsByClassName("cart-quantity")[0].addEventListener("change", contadorChanged);
     
+    let contador = document.getElementById("span-carrito");
+    contador.innerText = carritoItemsNombres.length;
+    
+
 }
 
 
