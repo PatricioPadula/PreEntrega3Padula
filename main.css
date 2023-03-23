@@ -1,4 +1,29 @@
 @import url("https://fonts.googleapis.com/css2?family=Didact+Gothic&family=Roboto:wght@300&display=swap");
+.contenedor{
+  text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+
+.productos{
+  width: 100%;
+  margin: 20px;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+}
+
+.product-img{
+  width: 200px;
+
+}
+.precio{
+  margin-left: 50px;
+}
+
 .bg-color {
   background-color: rgb(211, 211, 211);
 }
