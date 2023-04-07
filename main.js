@@ -1,8 +1,10 @@
 const contenedorProductos = document.querySelector("#contenedor-productos");
 const contenedorCarrito = document.querySelector(".cart-content");
 
+const mostrarProductos = async () =>{
+    const response = await fetch("./data.json");
+    const data = await response.json();
 
-const mostrarProductos = (data) =>{
     data.forEach(producto =>{
         const cardProducto = document.createElement("div");
         cardProducto.classList.add("productos");
@@ -25,8 +27,7 @@ const mostrarProductos = (data) =>{
     })
 }
 
-mostrarProductos(productos);
-
+mostrarProductos();
 
 let carrito = [];
 
@@ -42,19 +43,27 @@ function agregarClick(id){
 
     const existe = carrito.some(prod => prod.id === parseInt(id))
     if(existe){
-        alert("Ya añadiste este producto al carrito");
+        Swal.fire({
+            position: 'top',
+            icon: 'success',
+            title: 'Este producto ya se encuentra en el carrito',
+            showConfirmButton: false,
+            timer: 1500
+          })
         return;
     }
 
-    let prodEncontrado = productos.find( prod => prod.id === parseInt(id));
-    carrito.push(prodEncontrado);
-    renderCarrito()
-    console.log(carrito);
-
-    let contador = document.getElementById("span-carrito");
-    contador.innerText = carrito.length;
+    fetch("./data.json")
+    .then(response => response.json())
+    .then(data => {
+        let prodEncontrado = data.find( prod => prod.id === parseInt(id));
+        carrito.push(prodEncontrado);
+        renderCarrito()
     
-    
+        let contador = document.getElementById("span-carrito");
+        contador.innerText = carrito.length;
+    })
+     
 }
 
 function renderCarrito(){
@@ -94,19 +103,40 @@ function actualizarTotal(){
 
 function borrarProductos(e){
     
-    const buttonDelete = e.target;
-            const caja = buttonDelete.closest(".cart-box");
-            const title = caja.querySelector(".cart-product-title").textContent;
-            for(let i = 0; i < carrito.length; i++){
-                if(carrito[i].nombre === title){
-                    carrito.splice(i, 1)
-                    localStorage.setItem("carrito",JSON.stringify(carrito));
+            const buttonDelete = e.target;
+
+            Swal.fire({
+                text: 'Estas seguro que quieres borrar este producto del carrito?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#C9C9C9',
+                cancelButtonColor: '#A1A1A1',
+                confirmButtonText: 'Si, borrar',
+                cancelButtonText: 'No, cancelar'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                Swal.fire({
+                    position: 'top-start',
+                    title: 'Se elimino el producto del carrito',
+                    timer: 1500
+                })
+                  
+                const caja = buttonDelete.closest(".cart-box");
+                const title = caja.querySelector(".cart-product-title").textContent;
+                for(let i = 0; i < carrito.length; i++){
+                    if(carrito[i].nombre === title){
+                        carrito.splice(i, 1)
+                        localStorage.setItem("carrito",JSON.stringify(carrito));
+                    }
                 }
-            }
-            caja.remove()
-            let contador = document.getElementById("span-carrito");
-            contador.innerText = carrito.length;
-           
-            actualizarTotal()
+                caja.remove()
+                let contador = document.getElementById("span-carrito");
+                contador.innerText = carrito.length;
+                
+            
+                actualizarTotal()
+                    }
+              })
+
             
 }
